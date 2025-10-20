@@ -21,22 +21,47 @@ public class Game {
     private void play() {
         Scanner scanner = new Scanner(System.in);
         display("Üdv a várkalandban");
-        display(player.getScene().getDescription());
+
 
         // ez maga a játék ciklus
         while (true) {
+            display("----------------------------");
+            display(player.getCurrentScene().getDescription());
+            display(">");
 
+            //Scanner nextLine() az mindig egy teljes sort olvas be
             String input = scanner.nextLine().toLowerCase(Locale.ROOT).trim();
-            String command = input;
+            String[] words = input.split(" ");
+
+            String command = words[0];
+
+            //Ha van második szó , majd itt kinyerjük egy terrary operator-ral -> terrary ugyanaz, mint egy if-ben, csak tömör
+            String subject = words.length > 1 ? words[1] : "";
 
             switch (command) {
+
+                case "menj":
+                    //TODO moveplayer
+                    Direction direction = Direction.fromString(subject);
+                    moveplayer(direction);
+                  break;
                 case "kilép":
                     display("Köszi a játékot!");
                     scanner.close();
                     return;
+                default:
+                    display("Nem értem a parancsot");
+                    break;
             }
-
         }
+    }
+
+    private void moveplayer(Direction direction) {
+        Scene nextScene = player.getCurrentScene().getExit(direction);
+        if(nextScene == null){
+            display("Nem mehetsz arra!");
+        }
+        player.setCurrentScene(nextScene);
     }
 
     private void display(String message) {
